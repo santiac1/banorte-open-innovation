@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from "@/lib/supabase"
 import { formatCurrency } from "@/lib/utils"
 
 export default async function TransactionsPage() {
-  const supabase = createSupabaseServerClient()
+  const supabase = await createSupabaseServerClient()
   const { data: transactions, error } = await supabase
     .from("transactions")
     .select("id, date, amount, type, description")

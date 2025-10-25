@@ -1,6 +1,6 @@
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
-import { createBrowserClient, createServerClient } from "@supabase/ssr"
+import { createServerClient } from "@supabase/ssr"
 
 type SupabaseCookieOptions = {
   path?: string
@@ -21,24 +21,23 @@ function ensureSupabaseEnv() {
   }
 }
 
-export function createSupabaseBrowserClient() {
+export async function createSupabaseServerClient() {
   ensureSupabaseEnv()
-  return createBrowserClient(SUPABASE_URL!, SUPABASE_ANON_KEY!)
-}
+  const cookieStore = await cookies()
+  const cookieSnapshot = Object.fromEntries(
+    cookieStore.getAll().map(({ name, value }) => [name, value])
+  )
 
-export function createSupabaseServerClient() {
-  ensureSupabaseEnv()
-  const cookieStore = cookies()
   return createServerClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
     cookies: {
       get(name: string) {
-        return cookieStore.get(name)?.value
+        return cookieSnapshot[name]
       },
-      set(name: string, value: string, options: SupabaseCookieOptions = {}) {
-        cookieStore.set({ name, value, ...options })
+      set() {
+        // noop: cookies() es de solo lectura en Server Components
       },
-      remove(name: string, options: SupabaseCookieOptions = {}) {
-        cookieStore.set({ name, value: "", ...options, maxAge: 0 })
+      remove() {
+        // noop
       },
     },
   })

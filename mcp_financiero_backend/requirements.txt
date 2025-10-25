@@ -2,8 +2,10 @@ fastapi
 uvicorn[standard]
 pydantic
 python-dotenv
-supabase-py
+supabase==2.4.5
 langchain
-langchain-openai
+langchain-core>=0.2.11
+langchain-google-genai
+google-generativeai
 pandas
 prophet

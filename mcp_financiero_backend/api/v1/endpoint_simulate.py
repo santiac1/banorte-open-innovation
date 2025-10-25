@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from mcp_financiero_backend.core.security import get_current_user_id, supabase_admin
-from mcp_financiero_backend.models.schemas import SimulationRequest, SimulationResponse
-from mcp_financiero_backend.services.simulation_service import run_financial_simulation
+from core.security import get_current_user_id, supabase_admin
+from models.schemas import SimulationRequest, SimulationResponse
+from services.simulation_service import run_financial_simulation
 
 router = APIRouter()
 

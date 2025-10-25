@@ -7,7 +7,7 @@ import pandas as pd
 from prophet import Prophet
 from supabase import Client
 
-from mcp_financiero_backend.models.schemas import SimulationResponse
+from models.schemas import SimulationResponse
 
 
 def _prepare_time_series(transactions: list[Dict[str, Any]]) -> pd.DataFrame:

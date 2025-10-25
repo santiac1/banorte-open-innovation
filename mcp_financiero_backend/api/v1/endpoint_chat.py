@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from mcp_financiero_backend.core.security import get_current_user_id, supabase_admin
-from mcp_financiero_backend.models.schemas import ChatRequest, ChatResponse
-from mcp_financiero_backend.services.assistant_service import get_ai_recommendation
+from core.security import get_current_user_id, supabase_admin
+from models.schemas import ChatRequest, ChatResponse
+from services.assistant_service import get_ai_recommendation
 
 router = APIRouter()
 

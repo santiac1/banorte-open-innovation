@@ -13,14 +13,17 @@ import {
 } from "@/app/components/ui/card"
 import { Input } from "@/app/components/ui/input"
 import { Toaster, toast } from "@/app/components/ui/toaster"
-import { createSupabaseBrowserClient } from "@/lib/supabase"
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser"
 import { useSessionStore } from "@/lib/session-store"
+import { generateId } from "@/lib/id"
 
 interface Message {
   id: string
   role: "user" | "assistant"
   content: string
 }
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
 
 export default function ChatAssistant() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -42,7 +45,7 @@ export default function ChatAssistant() {
 
     if (!token) {
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Sesión expirada",
         description: "Vuelve a iniciar sesión para continuar.",
       })
@@ -50,7 +53,7 @@ export default function ChatAssistant() {
     }
 
     const userMessage: Message = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       role: "user",
       content: input,
     }
@@ -61,7 +64,7 @@ export default function ChatAssistant() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MCP_API_URL ?? "http://localhost:8000"}/api/v1/chat/ask`,
+        `${API_BASE_URL}/api/v1/chat/ask`,
         {
           method: "POST",
           headers: {
@@ -79,7 +82,7 @@ export default function ChatAssistant() {
 
       const payload = await response.json()
       const assistantMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         role: "assistant",
         content: payload.answer,
       }
@@ -88,7 +91,7 @@ export default function ChatAssistant() {
       const message =
         error instanceof Error ? error.message : "No se pudo obtener respuesta"
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Error",
         description: message,
       })

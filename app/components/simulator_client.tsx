@@ -15,6 +15,9 @@ import { Input } from "@/app/components/ui/input"
 import { Toaster, toast } from "@/app/components/ui/toaster"
 import { useSessionStore } from "@/lib/session-store"
 import { formatCurrency } from "@/lib/utils"
+import { generateId } from "@/lib/id"
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
 
 interface SimulationResult {
   date: string
@@ -43,7 +46,7 @@ export default function SimulatorClient({ sessionToken }: SimulatorClientProps) 
 
     if (!activeToken) {
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Sesión requerida",
         description: "Inicia sesión nuevamente para ejecutar simulaciones.",
       })
@@ -53,7 +56,7 @@ export default function SimulatorClient({ sessionToken }: SimulatorClientProps) 
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MCP_API_URL ?? "http://localhost:8000"}/api/v1/simulate/run`,
+        `${API_BASE_URL}/api/v1/simulate/run`,
         {
           method: "POST",
           headers: {
@@ -79,7 +82,7 @@ export default function SimulatorClient({ sessionToken }: SimulatorClientProps) 
       setResults(payload.projected_data)
       setSummary(payload.summary)
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Simulación completada",
         description: payload.summary,
       })
@@ -87,7 +90,7 @@ export default function SimulatorClient({ sessionToken }: SimulatorClientProps) 
       const message =
         error instanceof Error ? error.message : "No se pudo completar la simulación"
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Error",
         description: message,
       })

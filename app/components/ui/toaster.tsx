@@ -5,6 +5,7 @@ import { createPortal } from "react-dom"
 
 import { Toast, ToastDescription, ToastTitle } from "@/app/components/ui/toast"
 import { type Toast as ToastType, useToast } from "@/app/components/ui/use-toast"
+import { generateId } from "@/lib/id"
 
 export function Toaster() {
   const { toast, dismiss } = useToast()
@@ -38,7 +39,7 @@ export function Toaster() {
 
 export function toast(message: ToastType) {
   if (!message.id) {
-    message.id = crypto.randomUUID()
+    message.id = generateId()
   }
   import("./use-toast").then(({ dispatchToast }) => dispatchToast(message))
 }

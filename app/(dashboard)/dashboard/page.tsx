@@ -2,7 +2,7 @@ import DashboardOverview from "@/app/components/dashboard_overview"
 import { createSupabaseServerClient } from "@/lib/supabase"
 
 export default async function DashboardPage() {
-  const supabase = createSupabaseServerClient()
+  const supabase = await createSupabaseServerClient()
 
   const { data: transactions } = await supabase
     .from("transactions")

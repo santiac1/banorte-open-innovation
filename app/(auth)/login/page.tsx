@@ -15,7 +15,8 @@ import {
 import { Input } from "@/app/components/ui/input"
 import { Label } from "@/app/components/ui/label"
 import { Toaster, toast } from "@/app/components/ui/toaster"
-import { createSupabaseBrowserClient } from "@/lib/supabase"
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser"
+import { generateId } from "@/lib/id"
 import { useSessionStore } from "@/lib/session-store"
 
 export default function LoginPage() {
@@ -38,7 +39,7 @@ export default function LoginPage() {
 
     if (error) {
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Error al iniciar sesión",
         description: error.message,
       })
@@ -50,7 +51,7 @@ export default function LoginPage() {
     setToken(session.data.session?.access_token ?? null)
 
     toast({
-      id: crypto.randomUUID(),
+      id: generateId(),
       title: "Bienvenido",
       description: "Autenticación exitosa",
     })

@@ -15,7 +15,8 @@ import {
 import { Input } from "@/app/components/ui/input"
 import { Label } from "@/app/components/ui/label"
 import { Toaster, toast } from "@/app/components/ui/toaster"
-import { createSupabaseBrowserClient } from "@/lib/supabase"
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser"
+import { generateId } from "@/lib/id"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -41,7 +42,7 @@ export default function SignupPage() {
 
     if (error) {
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "No fue posible registrarse",
         description: error.message,
       })
@@ -49,7 +50,7 @@ export default function SignupPage() {
     }
 
     toast({
-      id: crypto.randomUUID(),
+      id: generateId(),
       title: "Verifica tu correo",
       description: "Revisa tu bandeja para confirmar la cuenta.",
     })

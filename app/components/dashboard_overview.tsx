@@ -8,8 +8,9 @@ import ChatAssistant from "@/app/components/chat_assistant"
 import { Button } from "@/app/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { toast } from "@/app/components/ui/toaster"
-import { createSupabaseBrowserClient } from "@/lib/supabase"
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser"
 import { formatCurrency } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 interface Transaction {
   id: string
@@ -73,14 +74,48 @@ export default function DashboardOverview({
     initialData: initialGoals,
   })
 
+  const ensureExpenseCategory = useMemo(
+    () => async () => {
+      const userId = userIdRef.current
+      if (!userId) throw new Error("No se pudo determinar el usuario autenticado")
+
+      const { data: existing, error: fetchError } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("type", "gasto")
+        .limit(1)
+        .maybeSingle()
+
+      if (fetchError) throw fetchError
+      if (existing) return existing.id as string
+
+      const { data: created, error: insertError } = await supabase
+        .from("categories")
+        .insert({
+          user_id: userId,
+          type: "gasto",
+          name: "Gasto General",
+        })
+        .select("id")
+        .single()
+
+      if (insertError) throw insertError
+      return created.id as string
+    },
+    [supabase],
+  )
+
   const addExpenseMutation = useMutation({
     mutationFn: async () => {
       const userId = userIdRef.current
       if (!userId) {
         throw new Error("No se pudo determinar el usuario autenticado")
       }
+      const categoryId = await ensureExpenseCategory()
       const { error } = await supabase.from("transactions").insert({
         user_id: userId,
+        category_id: categoryId,
         type: "gasto",
         amount: 500,
         date: new Date().toISOString(),
@@ -91,14 +126,14 @@ export default function DashboardOverview({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["transactions"] })
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Gasto agregado",
         description: "El movimiento se registró correctamente.",
       })
     },
     onError: (error: Error) => {
       toast({
-        id: crypto.randomUUID(),
+        id: generateId(),
         title: "Error al agregar gasto",
         description: error.message,
       })

@@ -32,5 +32,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((dashboard|transactions|simulator).*)", "/login", "/signup"],
+  matcher: ["/((?:dashboard|transactions|simulator).*)", "/login", "/signup"],
 }
