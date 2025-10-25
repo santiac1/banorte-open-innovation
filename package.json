@@ -9,9 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/env": "^16.0.0",
     "@radix-ui/react-slot": "^1.2.3",
+    "@supabase/supabase-js": "^2.76.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.548.0",
     "next": "16.0.0",
     "react": "19.2.0",
